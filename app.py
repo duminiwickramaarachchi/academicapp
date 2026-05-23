@@ -238,8 +238,7 @@ def lecturer_dashboard():
 
 @app.route("/save_marks", methods=["POST"])
 def save_marks():
-    cd
-    
+
     student_id = request.form["student_id"]
     subject_id = request.form["subject_id"]
     marks = request.form["marks"]
