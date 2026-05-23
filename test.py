@@ -86,16 +86,15 @@ def run():
 
             admin.goto(f"{BASE_URL}/admin")
 
-            username_inputs = admin.locator(
-                "input[name='username']"
+            admin.fill(
+                "input[name='username']",
+                "teststudent"
             )
 
-            password_inputs = admin.locator(
-                "input[name='password']"
+            admin.fill(
+                "input[name='password']",
+                "123456"
             )
-
-            username_inputs.nth(1).fill("teststudent")
-            password_inputs.nth(1).fill("123456")
 
             admin.select_option(
                 "select[name='role']",
@@ -128,18 +127,18 @@ def run():
 
             admin.fill(
                 "input[name='name']",
-                "Science"
+                "Test Subject"
             )
 
             admin.fill(
-                "input[name='lecturer_id']",
-                "1"
+                "form[action='/create_subject'] input[name='lecturer_id']",
+                "3"
             )
 
             snap(admin, "05_create_subject_form")
 
             admin.locator(
-                "button:has-text('Create')"
+                "form[action='/create_subject'] button"
             ).click()
 
             admin.wait_for_load_state("networkidle")
@@ -160,21 +159,22 @@ def run():
 
             admin.goto(f"{BASE_URL}/admin")
 
-            visible_student_inputs = admin.locator(
-                "input[name='student_id']:visible"
+            enroll_form = admin.locator(
+                "form[action='/enroll_student']"
             )
 
-            visible_subject_inputs = admin.locator(
-                "input[name='subject_id']:visible"
-            )
+            enroll_form.locator(
+                "input[name='student_id']"
+            ).fill("5")
 
-            visible_student_inputs.first.fill("1")
-            visible_subject_inputs.first.fill("1")
+            enroll_form.locator(
+                "input[name='subject_id']"
+            ).fill("1")
 
             snap(admin, "07_enroll_student_form")
 
-            admin.locator(
-                "button:has-text('Enroll')"
+            enroll_form.locator(
+                "button"
             ).click()
 
             admin.wait_for_load_state("networkidle")
@@ -195,21 +195,22 @@ def run():
 
             admin.goto(f"{BASE_URL}/admin")
 
-            subject_inputs = admin.locator(
-                "input[name='subject_id']:visible"
+            change_form = admin.locator(
+                "form[action='/change_lecturer']"
             )
 
-            lecturer_inputs = admin.locator(
-                "input[name='lecturer_id']:visible"
-            )
+            change_form.locator(
+                "input[name='subject_id']"
+            ).fill("1")
 
-            subject_inputs.nth(1).fill("1")
-            lecturer_inputs.nth(1).fill("1")
+            change_form.locator(
+                "input[name='lecturer_id']"
+            ).fill("7")
 
             snap(admin, "09_change_lecturer_form")
 
-            admin.locator(
-                "button:has-text('Change')"
+            change_form.locator(
+                "button"
             ).click()
 
             admin.wait_for_load_state("networkidle")
