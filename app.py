@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import sqlite3
+import os
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key"
@@ -86,22 +87,26 @@ def admin_dashboard():
 # CREATE USER
 @app.route("/create_user", methods=["POST"])
 def create_user():
-    username = request.form["username"]
-    password = request.form["password"]
-    role = request.form["role"]
+    try:
+        username = request.form["username"]
+        password = request.form["password"]
+        role = request.form["role"]
 
-    conn = get_db()
-    cursor = conn.cursor()
+        conn = get_db()
+        cursor = conn.cursor()
 
-    cursor.execute("""
-        INSERT INTO user (username, password, role)
-        VALUES (?, ?, ?)
-    """, (username, password, role))
+        cursor.execute("""
+            INSERT INTO user (username, password, role)
+            VALUES (?, ?, ?)
+        """, (username, password, role))
 
-    conn.commit()
-    conn.close()
+        conn.commit()
+        conn.close()
 
-    return redirect(url_for('admin_dashboard'))
+        return redirect(url_for('admin_dashboard'))
+
+    except Exception as e:
+        return f"CREATE USER ERROR: {e}"
 
 
 # DELETE USER
@@ -120,40 +125,48 @@ def delete_user(user_id):
 # Create Subject
 @app.route("/create_subject", methods=["POST"])
 def create_subject():
-    name = request.form["name"]
-    lecturer_id = request.form["lecturer_id"]
+    try:
+        name = request.form["name"]
+        lecturer_id = request.form["lecturer_id"]
 
-    conn = get_db()
-    cursor = conn.cursor()
+        conn = get_db()
+        cursor = conn.cursor()
 
-    cursor.execute("""
-        INSERT INTO subjects (name, lecturer_id)
-        VALUES (?, ?)
-    """, (name, lecturer_id))
+        cursor.execute("""
+            INSERT INTO subjects (name, lecturer_id)
+            VALUES (?, ?)
+        """, (name, lecturer_id))
 
-    conn.commit()
-    conn.close()
+        conn.commit()
+        conn.close()
 
-    return redirect(url_for('admin_dashboard'))
+        return redirect(url_for('admin_dashboard'))
+
+    except Exception as e:
+        return f"CREATE SUBJECT ERROR: {e}"
 
 # Enroll Student
 @app.route("/enroll_student", methods=["POST"])
 def enroll_student():
-    student_id = request.form["student_id"]
-    subject_id = request.form["subject_id"]
+    try:
+        student_id = request.form["student_id"]
+        subject_id = request.form["subject_id"]
 
-    conn = get_db()
-    cursor = conn.cursor()
+        conn = get_db()
+        cursor = conn.cursor()
 
-    cursor.execute("""
-        INSERT INTO enrollments (student_id, subject_id)
-        VALUES (?, ?)
-    """, (student_id, subject_id))
+        cursor.execute("""
+            INSERT INTO enrollments (student_id, subject_id)
+            VALUES (?, ?)
+        """, (student_id, subject_id))
 
-    conn.commit()
-    conn.close()
+        conn.commit()
+        conn.close()
 
-    return redirect(url_for('admin_dashboard'))
+        return redirect(url_for('admin_dashboard'))
+
+    except Exception as e:
+        return f"ENROLL ERROR: {e}"
 
 
 # Change Lecturer
