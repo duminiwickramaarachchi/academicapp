@@ -108,19 +108,49 @@ def create_user():
     except Exception as e:
         return f"CREATE USER ERROR: {e}"
 
+    finally:
+        if conn:
+            conn.close()
 
 # DELETE USER
 @app.route("/delete_user/<int:user_id>")
 def delete_user(user_id):
-    conn = get_db()
-    cursor = conn.cursor()
 
-    cursor.execute("DELETE FROM user WHERE id=?", (user_id,))
+    conn = None
 
-    conn.commit()
-    conn.close()
+    try:
+        conn = get_db()
+        cursor = conn.cursor()
 
-    return redirect(url_for('admin_dashboard'))
+        # delete enrollments first
+        cursor.execute("""
+            DELETE FROM enrollments
+            WHERE student_id=?
+        """, (user_id,))
+
+        # remove lecturer from subjects
+        cursor.execute("""
+            UPDATE subjects
+            SET lecturer_id=NULL
+            WHERE lecturer_id=?
+        """, (user_id,))
+
+        # delete user
+        cursor.execute("""
+            DELETE FROM user
+            WHERE id=?
+        """, (user_id,))
+
+        conn.commit()
+
+        return redirect(url_for('admin_dashboard'))
+
+    except Exception as e:
+        return f"DELETE USER ERROR: {e}"
+
+    finally:
+        if conn:
+            conn.close()
 
 # Create Subject
 @app.route("/create_subject", methods=["POST"])
@@ -144,10 +174,16 @@ def create_subject():
 
     except Exception as e:
         return f"CREATE SUBJECT ERROR: {e}"
+    
+    finally:
+        if conn:
+            conn.close()
 
 # Enroll Student
 @app.route("/enroll_student", methods=["POST"])
 def enroll_student():
+    conn = None
+
     try:
         student_id = request.form["student_id"]
         subject_id = request.form["subject_id"]
@@ -161,12 +197,15 @@ def enroll_student():
         """, (student_id, subject_id))
 
         conn.commit()
-        conn.close()
 
         return redirect(url_for('admin_dashboard'))
 
     except Exception as e:
         return f"ENROLL ERROR: {e}"
+
+    finally:
+        if conn:
+            conn.close()
 
 
 # Change Lecturer
@@ -189,6 +228,8 @@ def change_lecturer():
 
     return redirect(url_for('admin_dashboard'))
 
+
+
 #Remove Student
 @app.route("/remove_student/<int:student_id>/<int:subject_id>")
 def remove_student(student_id, subject_id):
@@ -204,6 +245,8 @@ def remove_student(student_id, subject_id):
     conn.close()
 
     return redirect(url_for('admin_dashboard'))
+
+
 
 @app.route("/lecturer_dashboard")
 def lecturer_dashboard():
@@ -269,6 +312,7 @@ def save_marks():
     conn.close()
 
     return redirect(url_for("lecturer_dashboard"))
+
 
 @app.route("/student_dashboard")
 def student_dashboard():
