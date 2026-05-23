@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Lecturer Dashboard</title>
+</head>
+
+<body>
+
+    <h2>Lecturer Dashboard</h2>
+
+    <a href="/logout">Logout</a>
+
+    <hr>
+
+    <h3>My Subjects</h3>
+
+    {% if subjects %}
+    {% for subject in subjects %}
+
+    <h4>
+        {{ subject[1] }} (ID: {{ subject[0] }})
+    </h4>
+
+    <table border="1">
+        <tr>
+            <th>Student Name</th>
+            <th>Marks</th>
+            <th>Action</th>
+        </tr>
+
+        {% for e in enrollments %}
+        {% if e[0] == subject[0] %}
+        <tr>
+            <td>{{ e[2] }}</td> <!-- student name -->
+
+            <td>
+                {% if e[3] %}
+                {{ e[3] }}
+                {% else %}
+                Not graded
+                {% endif %}
+            </td>
+
+            <td>
+                <form method="POST" action="/save_marks">
+                    <input type="hidden" name="student_id" value="{{ e[1] }}">
+                    <input type="hidden" name="subject_id" value="{{ subject[0] }}">
+
+                    <input type="number" name="marks" placeholder="Enter marks" required>
+
+                    <button type="submit">Save</button>
+                </form>
+            </td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+    </table>
+
+    {% for avg in averages %}
+    {% if avg[0] == subject[0] %}
+    <p><b>Average Marks: {{ avg[1] | round(2) if avg[1] else "N/A" }}</b></p>
+    {% endif %}
+    {% endfor %}
+
+    <br><br>
+    <br><br>
+
+    {% endfor %}
+    {% else %}
+    <p>No subjects assigned to you.</p>
+    {% endif %}
+
+</body>
+
+</html>

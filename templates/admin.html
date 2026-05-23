@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Admin Dashboard</title>
+</head>
+
+<body>
+
+    <h2>Admin Dashboard</h2>
+
+    <h3>Create User</h3>
+    <form method="POST" action="/create_user">
+        Username: <input type="text" name="username" required><br><br>
+        Password: <input type="text" name="password" required><br><br>
+
+        Role:
+        <select name="role">
+            <option value="student">Student</option>
+            <option value="lecturer">Lecturer</option>
+        </select><br><br>
+
+        <button type="submit">Create User</button>
+    </form>
+
+    <hr>
+
+    <h3>All Users</h3>
+
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Action</th>
+        </tr>
+
+        {% for user in users %}
+        <tr>
+            <td>{{ user[0] }}</td>
+            <td>{{ user[1] }}</td>
+            <td>{{ user[2] }}</td>
+            <td>
+                <a href="/delete_user/{{ user[0] }}">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+
+    </table>
+
+    <hr>
+    <h3>Subjects</h3>
+
+    {% for subject in subjects if subjects %}
+    <h4>
+        Subject: {{ subject[1] }} (ID: {{ subject[0] }})
+    </h4>
+
+    <p>
+        Lecturer: {{ subject[2] if subject[2] else "Not assigned" }}
+    </p>
+
+    <p>Students:</p>
+    <ul>
+        {% for enroll in enrollments %}
+        {% if enroll[0] == subject[0] %}
+        <li>
+            {{ enroll[2] }}
+
+            <!-- REMOVE STUDENT -->
+            <a href="/remove_student/{{ enroll[1] }}/{{ subject[0] }}">
+                Remove
+            </a>
+        </li>
+        {% endif %}
+        {% endfor %}
+    </ul>
+
+    <hr>
+    {% endfor %}
+
+    <form method="POST" action="/create_subject">
+        Subject Name: <input type="text" name="name">
+        Lecturer ID: <input type="number" name="lecturer_id">
+        <button>Create</button>
+    </form>
+
+    <form method="POST" action="/enroll_student">
+        Student ID: <input type="number" name="student_id">
+        Subject ID: <input type="number" name="subject_id">
+        <button>Enroll</button>
+    </form>
+
+    <form method="POST" action="/change_lecturer">
+        Subject ID: <input type="number" name="subject_id">
+        New Lecturer ID: <input type="number" name="lecturer_id">
+        <button>Change</button>
+    </form>
+
+
+
+</body>
+
+</html>

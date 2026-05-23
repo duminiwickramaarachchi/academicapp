@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Student Dashboard</title>
+</head>
+
+<body>
+
+    <h2>Student Dashboard</h2>
+
+    <a href="/logout">Logout</a>
+
+    <hr>
+
+    <h3>My Subjects & Marks</h3>
+
+    {% if data %}
+    <table border="1">
+        <tr>
+            <th>Subject</th>
+            <th>Marks</th>
+        </tr>
+
+        {% for d in data %}
+        <tr>
+            <td>{{ d[0] }}</td>
+
+            <td>
+                {% if d[1] %}
+                {{ d[1] }}
+                {% else %}
+                Not graded yet
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <hr>
+
+    <h3>My Average Marks</h3>
+
+    {% if avg_marks %}
+    <p><b>{{ avg_marks | round(2) }}</b></p>
+    {% else %}
+    <p>No marks available yet</p>
+    {% endif %}
+
+    {% else %}
+    <p>You are not enrolled in any subjects.</p>
+    {% endif %}
+
+</body>
+
+</html>
