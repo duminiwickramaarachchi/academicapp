@@ -4,7 +4,9 @@ print("Playwright installed successfully")
 import os
 from playwright.sync_api import sync_playwright
 
-BASE_URL = "http://127.0.0.1:5000"
+import time
+
+BASE_URL = "https://academicapp-1.onrender.com"
 
 # Create folder for screenshots
 os.makedirs("screenshots", exist_ok=True)

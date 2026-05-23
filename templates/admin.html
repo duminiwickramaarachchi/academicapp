@@ -9,6 +9,12 @@
 
     <h2>Admin Dashboard</h2>
 
+    <a href="{{ url_for('logout') }}">
+        <button style="background-color:red;color:white;padding:8px 12px;border:none;border-radius:5px;cursor:pointer;">
+            Logout
+        </button>
+    </a>
+
     <h3>Create User</h3>
     <form method="POST" action="/create_user">
         Username: <input type="text" name="username" required><br><br>
